@@ -1,12 +1,13 @@
-import { onFID, onLCP, onCLS } from 'web-vitals';
+import { onFID, onLCP, onCLS, CLSMetric, LCPMetric, FIDMetric } from 'web-vitals';
 import { InstrumentationBase } from '@opentelemetry/instrumentation';
-import { trace, context } from '@opentelemetry/api';
+import { trace, context, Context } from '@opentelemetry/api';
 import { hrTime } from '@opentelemetry/core';
 
 export class WebVitalsInstrumentation extends InstrumentationBase {
+  enabled = false;
   // function that creates a span for each web vital and reports the data
   // as attributes
-  onReport(metric, parentSpanContext) {
+  onReport(metric: CLSMetric | LCPMetric | FIDMetric, parentSpanContext: Context) {
     const now = hrTime();
     // start the span
     const webVitalsSpan = trace
