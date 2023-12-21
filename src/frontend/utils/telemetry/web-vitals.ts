@@ -3,6 +3,8 @@ import { InstrumentationBase } from '@opentelemetry/instrumentation';
 import { trace, context, Context } from '@opentelemetry/api';
 import { hrTime } from '@opentelemetry/core';
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 export class WebVitalsInstrumentation extends InstrumentationBase {
   enabled = false;
   // function that creates a span for each web vital and reports the data
