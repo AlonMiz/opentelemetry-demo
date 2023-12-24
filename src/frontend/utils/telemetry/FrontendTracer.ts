@@ -12,6 +12,7 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { SessionIdProcessor } from './SessionIdProcessor';
 import { detectResourcesSync } from '@opentelemetry/resources/build/src/detect-resources';
 import { WebVitalsInstrumentation } from './web-vitals';
+import { addBasicAttributes } from './basic-attributes';
 
 const { NEXT_PUBLIC_OTEL_SERVICE_NAME = '', NEXT_PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = '' } =
   typeof window !== 'undefined' ? window.ENV : {};
@@ -32,7 +33,7 @@ const FrontendTracer = async (collectorString: string) => {
   provider.addSpanProcessor(
     new BatchSpanProcessor(
       new OTLPTraceExporter({
-        url: NEXT_PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT || collectorString || 'http://localhost:4318/v1/traces',
+        url: NEXT_PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT || collectorString || 'http://doman.com:4318/v1/traces',
       })
     )
   );
@@ -49,12 +50,26 @@ const FrontendTracer = async (collectorString: string) => {
   registerInstrumentations({
     tracerProvider: provider,
     instrumentations: [
-      new WebVitalsInstrumentation('web-vitals-instrumentation', '1.0.0'),
+      new WebVitalsInstrumentation(),
       getWebAutoInstrumentations({
+        '@opentelemetry/instrumentation-document-load': {
+          applyCustomAttributesOnSpan: {
+            documentLoad: span => {
+              addBasicAttributes(span);
+            },
+          },
+        },
+        '@opentelemetry/instrumentation-user-interaction': {
+          enabled: false,
+        },
+        '@opentelemetry/instrumentation-xml-http-request': {
+          enabled: true,
+        },
         '@opentelemetry/instrumentation-fetch': {
           propagateTraceHeaderCorsUrls: /.*/,
           clearTimingResources: true,
           applyCustomAttributesOnSpan(span) {
+            addBasicAttributes(span);
             span.setAttribute('app.synthetic_request', 'false');
           },
         },

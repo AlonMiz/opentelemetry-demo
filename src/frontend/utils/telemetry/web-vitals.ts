@@ -1,20 +1,21 @@
-import { onFID, onLCP, onCLS, CLSMetric, LCPMetric, FIDMetric } from 'web-vitals';
-import { InstrumentationBase } from '@opentelemetry/instrumentation';
+import { onFID, onLCP, onCLS, CLSMetric, LCPMetric, FIDMetric, onINP, onTTFB, INPMetric, TTFBMetric } from 'web-vitals';
+import { InstrumentationBase, InstrumentationModuleDefinition } from '@opentelemetry/instrumentation';
 import { trace, context, Context } from '@opentelemetry/api';
 import { hrTime } from '@opentelemetry/core';
+import { addBasicAttributes } from './basic-attributes';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 export class WebVitalsInstrumentation extends InstrumentationBase {
+  constructor() {
+    super('web-vitals-instrumentation', 'v0.1.0');
+  }
+  protected init(): void | InstrumentationModuleDefinition<''> | InstrumentationModuleDefinition<''>[] {}
   enabled = false;
   // function that creates a span for each web vital and reports the data
   // as attributes
-  onReport(metric: CLSMetric | LCPMetric | FIDMetric, parentSpanContext: Context) {
+  onReport(metric: CLSMetric | LCPMetric | FIDMetric | INPMetric | TTFBMetric, parentSpanContext: Context) {
     const now = hrTime();
     // start the span
-    const webVitalsSpan = trace
-      .getTracer('web-vitals-instrumentation')
-      .startSpan(metric.name, { startTime: now }, parentSpanContext);
+    const webVitalsSpan = this.tracer.startSpan(metric.name, { startTime: now }, parentSpanContext);
     // add core web vital attributes
     webVitalsSpan.setAttributes({
       [`web_vital.name`]: metric.name,
@@ -26,6 +27,8 @@ export class WebVitalsInstrumentation extends InstrumentationBase {
       // can expand these into their own attributes!
       [`web_vital.entries`]: JSON.stringify(metric.entries),
     });
+
+    addBasicAttributes(webVitalsSpan);
     // end the span
     webVitalsSpan.end();
   }
@@ -42,12 +45,16 @@ export class WebVitalsInstrumentation extends InstrumentationBase {
     onFID(metric => {
       this.onReport(metric, ctx);
     });
-    // Capture Cumulative Layout Shift
     onCLS(metric => {
       this.onReport(metric, ctx);
     });
-    // Capture Largest Contentful Paint
     onLCP(metric => {
+      this.onReport(metric, ctx);
+    });
+    onINP(metric => {
+      this.onReport(metric, ctx);
+    });
+    onTTFB(metric => {
       this.onReport(metric, ctx);
     });
   }
