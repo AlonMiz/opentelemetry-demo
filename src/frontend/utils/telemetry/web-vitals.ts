@@ -33,9 +33,7 @@ export class WebVitalsInstrumentation extends InstrumentationBase {
     webVitalsSpan.end();
   }
   enable() {
-    if (this.enabled) {
-      return;
-    }
+    if (this.enabled) return;
     this.enabled = true;
     // create a parent span that will have all web vitals spans as children
     const parentSpan = trace.getTracer('web-vitals-instrumentation').startSpan('web-vitals');

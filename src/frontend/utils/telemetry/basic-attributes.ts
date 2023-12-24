@@ -8,6 +8,6 @@ export const addBasicAttributes = (span: Span): void => {
   // get country from Date object
   // Sun Dec 24 2023 12:31:34 GMT+0200 (Israel Standard Time)
   const dateString = new Date().toString();
-  const country = dateString.split('(')[1].split(')')[0];
+  const country = dateString.split('(')[1].split(' ')[0];
   span.setAttribute('country', country);
 };
