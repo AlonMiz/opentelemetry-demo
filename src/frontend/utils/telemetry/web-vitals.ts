@@ -28,6 +28,8 @@ export class WebVitalsInstrumentation extends InstrumentationBase {
       [`web_vital.entries`]: JSON.stringify(metric.entries),
     });
 
+    webVitalsSpan.setAttribute('http.user_agent', navigator?.userAgent);
+
     addBasicAttributes(webVitalsSpan);
     // end the span
     webVitalsSpan.end();
