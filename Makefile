@@ -118,7 +118,7 @@ generate-kubernetes-manifests:
 
 .PHONY: start
 start:
-	docker compose up --force-recreate --remove-orphans --detach
+	docker compose up --force-recreate --remove-orphans --detach --build
 	@echo ""
 	@echo "OpenTelemetry Demo is running."
 	@echo "Go to http://localhost:8080 for the demo UI."

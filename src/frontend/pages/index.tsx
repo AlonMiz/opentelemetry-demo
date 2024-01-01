@@ -11,18 +11,7 @@ import ApiGateway from '../gateways/Api.gateway';
 import Banner from '../components/Banner';
 import { CypressFields } from '../utils/Cypress';
 import { useCurrency } from '../providers/Currency.provider';
-
-const throwARandomError = () => {
-  const random = Math.random();
-  if (random > 0.5) {
-    throw new Error('Random error: ' + random);
-  }
-  new Promise((resolve, reject) => {
-    setTimeout(() => {
-      reject('Random error: ' + random);
-    }, 1000);
-  });
-};
+import { ErrorButton } from '../components/Error/Error';
 
 const Home: NextPage = () => {
   const { selectedCurrency } = useCurrency();
@@ -40,8 +29,8 @@ const Home: NextPage = () => {
               <S.HotProducts>
                 <S.HotProductsTitle data-cy={CypressFields.HotProducts} id="hot-products">
                   Hot Products
+                  <ErrorButton />
                 </S.HotProductsTitle>
-                <button onClick={() => throwARandomError()}>Throw a random error</button>
                 <ProductList productList={productList} />
               </S.HotProducts>
             </S.Content>

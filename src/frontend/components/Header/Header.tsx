@@ -3,6 +3,7 @@
 
 import CartIcon from '../CartIcon';
 import CurrencySwitcher from '../CurrencySwitcher';
+import { AnotherErrorButton, ElementErrorButton } from '../Error/Error';
 import * as S from './Header.styled';
 
 const Header = () => {
@@ -11,9 +12,13 @@ const Header = () => {
       <S.NavBar>
         <S.Container>
           <S.NavBarBrand href="/">
-            <a><S.BrandImg /></a>
+            <a>
+              <S.BrandImg />
+            </a>
           </S.NavBarBrand>
           <S.Controls>
+            <AnotherErrorButton />
+            <ElementErrorButton />
             <CurrencySwitcher />
             <CartIcon />
           </S.Controls>

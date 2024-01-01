@@ -11,8 +11,9 @@ import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { SessionIdProcessor } from './SessionIdProcessor';
 import { detectResourcesSync } from '@opentelemetry/resources/build/src/detect-resources';
-import { WebVitalsInstrumentation } from './web-vitals';
+import { WebVitalsInstrumentation } from './WebVitalsInstrumentation';
 import { addBasicAttributes } from './basic-attributes';
+import { ErrorInstrumentation } from './ErrorInstrumentation';
 
 const { NEXT_PUBLIC_OTEL_SERVICE_NAME = '', NEXT_PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = '' } =
   typeof window !== 'undefined' ? window.ENV : {};
@@ -29,7 +30,6 @@ const FrontendTracer = async (collectorString: string) => {
   const provider = new WebTracerProvider({ resource });
 
   provider.addSpanProcessor(new SessionIdProcessor());
-
   provider.addSpanProcessor(
     new BatchSpanProcessor(
       new OTLPTraceExporter({
@@ -50,6 +50,7 @@ const FrontendTracer = async (collectorString: string) => {
   registerInstrumentations({
     tracerProvider: provider,
     instrumentations: [
+      new ErrorInstrumentation(),
       new WebVitalsInstrumentation(),
       getWebAutoInstrumentations({
         '@opentelemetry/instrumentation-document-load': {
