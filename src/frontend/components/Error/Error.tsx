@@ -25,6 +25,21 @@ const errors = {
   promiseRejection: () => {
     return Promise.reject('Promise rejection');
   },
+  unhandledRejection: () => {
+    Promise.reject('Unhandled rejection');
+  },
+  abortError: () => {
+    const controller = new AbortController();
+    controller.abort();
+  },
+  domException: () => {
+    document.querySelector('foo bar');
+  },
+  typeErrorEvent: () => {
+    const event = new Event('foo');
+    // @ts-expect-error - intentional type error
+    event.foo();
+  },
 };
 
 const throwRandomError = () => {
