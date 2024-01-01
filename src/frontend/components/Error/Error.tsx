@@ -1,15 +1,36 @@
 import { useEffect, useRef } from 'react';
 
+const errors = {
+  typeError: () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const foo: any = {};
+    foo.bar();
+  },
+  syntaxError: () => {
+    eval('foo bar');
+  },
+  referenceError: () => {
+    // @ts-expect-error - intentional reference error
+    foo.bar();
+  },
+  rangeError: () => {
+    new Array(-1);
+  },
+  uriError: () => {
+    decodeURIComponent('%');
+  },
+  error: () => {
+    throw new Error('Error');
+  },
+  promiseRejection: () => {
+    return Promise.reject('Promise rejection');
+  },
+};
+
 const throwRandomError = () => {
-  const random = Math.random();
-  if (random > 0.5) {
-    throw new Error('Random error: ' + random);
-  }
-  new Promise((resolve, reject) => {
-    setTimeout(() => {
-      reject('Random error: ' + random);
-    }, 1000);
-  });
+  const errorKeys = Object.keys(errors) as Array<keyof typeof errors>;
+  const randomKey = errorKeys[Math.floor(Math.random() * errorKeys.length)];
+  errors[randomKey]();
 };
 
 export const ErrorButton = () => {
