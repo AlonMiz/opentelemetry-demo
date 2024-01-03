@@ -1,46 +1,7 @@
 import { useEffect, useRef } from 'react';
+import { errorService } from '../../utils/telemetry/Errors/error.service';
 
-const errors = {
-  typeError: () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const foo: any = {};
-    foo.bar();
-  },
-  syntaxError: () => {
-    eval('foo bar');
-  },
-  referenceError: () => {
-    // @ts-expect-error - intentional reference error
-    foo.bar();
-  },
-  rangeError: () => {
-    new Array(-1);
-  },
-  uriError: () => {
-    decodeURIComponent('%');
-  },
-  error: () => {
-    throw new Error('Error');
-  },
-  promiseRejection: () => {
-    return Promise.reject('Promise rejection');
-  },
-  unhandledRejection: () => {
-    Promise.reject('Unhandled rejection');
-  },
-  abortError: () => {
-    const controller = new AbortController();
-    controller.abort();
-  },
-  domException: () => {
-    document.querySelector('foo bar');
-  },
-  typeErrorEvent: () => {
-    const event = new Event('foo');
-    // @ts-expect-error - intentional type error
-    event.foo();
-  },
-};
+const { errors } = errorService;
 
 const throwRandomError = () => {
   const errorKeys = Object.keys(errors) as Array<keyof typeof errors>;
@@ -53,7 +14,7 @@ export const ErrorButton = () => {
 };
 
 export const AnotherErrorButton = () => {
-  return <button onClick={() => throwRandomError()}>Throw another random error</button>;
+  return <button onClick={() => throwRandomError()}>WOW</button>;
 };
 
 export const ElementErrorButton = () => {

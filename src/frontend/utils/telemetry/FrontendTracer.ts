@@ -13,7 +13,7 @@ import { SessionIdProcessor } from './SessionIdProcessor';
 import { detectResourcesSync } from '@opentelemetry/resources/build/src/detect-resources';
 import { WebVitalsInstrumentation } from './WebVitalsInstrumentation';
 import { addBasicAttributes } from './basic-attributes';
-import { ErrorInstrumentation } from './ErrorInstrumentation';
+import { ErrorInstrumentation } from './Errors/ErrorInstrumentation';
 
 const { NEXT_PUBLIC_OTEL_SERVICE_NAME = '', NEXT_PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = '' } =
   typeof window !== 'undefined' ? window.ENV : {};
