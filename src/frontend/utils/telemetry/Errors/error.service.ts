@@ -1,7 +1,7 @@
 type GeneralError = {
   message: string;
   stack?: string;
-  name?: string;
+  name: string;
   filename?: string;
   lineNumber?: number;
   columnNumber?: number;
@@ -41,7 +41,7 @@ const stringify = (value: unknown): string | undefined => {
 
 const parseEvent = (event: Event): GeneralError => {
   const { type } = event;
-  return { type, message: 'Unknown event' };
+  return { type, message: 'Unknown event', name: 'Error' };
 };
 
 const parseError = (error: Error): GeneralError => {
@@ -51,13 +51,13 @@ const parseError = (error: Error): GeneralError => {
 
 const parseUnknownError = (error: unknown): GeneralError => {
   if (typeof error === 'string') {
-    return { message: error, type: 'Unknown Error String' };
+    return { message: error, type: 'Unknown Error String', name: 'Error' };
   }
   if (typeof error === 'object') {
     const { message = 'Error', stack, name = 'Error', ...meta } = error as Error;
     return { message, stack, name, meta: stringify(meta), type: 'Unknown Error Object' };
   }
-  return { message: 'Unknown error', name: 'Unknown Error Type' };
+  return { message: 'Unknown error', name: 'Error', type: 'Unknown Error' };
 };
 
 export type AnyError = Error | ErrorEvent | PromiseRejectionEvent | unknown;

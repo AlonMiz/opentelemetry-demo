@@ -11,7 +11,7 @@ export class ErrorInstrumentation extends InstrumentationBase {
   report(error: AnyError) {
     const { message, stack, type, cause, columnNumber, filename, lineNumber, meta, name, reason } =
       errorService.parse(error);
-    const span = this.tracer.startSpan(`${name}: ${message}`);
+    const span = this.tracer.startSpan(name);
     span.setAttribute('error.message', message);
     if (stack) span.setAttribute('error.stack', stack);
     if (type) span.setAttribute('error.type', type);
@@ -22,8 +22,7 @@ export class ErrorInstrumentation extends InstrumentationBase {
     if (meta) span.setAttribute('error.meta', meta);
     if (name) span.setAttribute('error.name', name);
     if (reason) span.setAttribute('error.reason', reason);
-    
-    
+
     addBasicAttributes(span);
     span.end();
   }

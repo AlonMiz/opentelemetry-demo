@@ -53,6 +53,7 @@ describe('Error service', () => {
       const parsed = errorService.parse(error);
       expect(parsed).toEqual({
         message: 'Something went wrong',
+        name: 'Error',
         type: 'Unknown Error String',
       });
     });
@@ -148,6 +149,7 @@ describe('Error service', () => {
       const parsed = errorService.parse('foo');
       expect(parsed).toEqual({
         message: 'foo',
+        name: 'Error',
         type: 'Unknown Error String',
       });
     });
@@ -181,6 +183,7 @@ describe('Error service', () => {
       const parsed = errorService.parse(new Event('event'));
       expect(parsed).toEqual({
         message: 'Unknown event',
+        name: 'Error',
         type: 'event',
       });
     });
