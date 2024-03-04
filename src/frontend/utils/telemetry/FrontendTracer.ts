@@ -61,7 +61,7 @@ const FrontendTracer = async (collectorString: string) => {
           },
         },
         '@opentelemetry/instrumentation-user-interaction': {
-          enabled: false,
+          enabled: true,
         },
         '@opentelemetry/instrumentation-xml-http-request': {
           enabled: true,
