@@ -39,7 +39,7 @@ export class ContextProcessor implements SpanProcessor {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onStart(span: Span, parentContext: Context): void {
     Object.entries(this.meta).forEach(([k, v]) => {
-      span.setAttribute(k, v);
+      if (v) span.setAttribute(k, v);
     });
     addBasicAttributes(span);
   }

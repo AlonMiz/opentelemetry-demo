@@ -18,7 +18,7 @@ import { ContextProcessor } from './ContextProcessor';
 const { NEXT_PUBLIC_OTEL_SERVICE_NAME = '', NEXT_PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = '' } =
   typeof window !== 'undefined' ? window.ENV : {};
 
-const FrontendTracer = async (collectorString: string, meta?: Record<string, string>) => {
+const FrontendTracer = async (collectorString: string, meta?: Record<string, string | undefined | null>) => {
   const { ZoneContextManager } = await import('@opentelemetry/context-zone');
 
   let resource = new Resource({
