@@ -2,7 +2,6 @@ import { onFID, onLCP, onCLS, CLSMetric, LCPMetric, FIDMetric, onINP, onTTFB, IN
 import { InstrumentationBase, InstrumentationModuleDefinition } from '@opentelemetry/instrumentation';
 import { trace, context, Context } from '@opentelemetry/api';
 import { hrTime } from '@opentelemetry/core';
-import { addBasicAttributes } from './basic-attributes';
 
 export class WebVitalsInstrumentation extends InstrumentationBase {
   constructor() {
@@ -27,7 +26,6 @@ export class WebVitalsInstrumentation extends InstrumentationBase {
       // can expand these into their own attributes!
       [`web_vital.entries`]: JSON.stringify(metric.entries),
     });
-    addBasicAttributes(webVitalsSpan);
     // end the span
     webVitalsSpan.end();
   }

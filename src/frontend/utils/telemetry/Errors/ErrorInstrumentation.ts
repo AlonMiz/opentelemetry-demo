@@ -1,5 +1,4 @@
 import { InstrumentationBase } from '@opentelemetry/instrumentation';
-import { addBasicAttributes } from '../basic-attributes';
 import { AnyError, errorService } from './error.service';
 
 export class ErrorInstrumentation extends InstrumentationBase {
@@ -23,7 +22,6 @@ export class ErrorInstrumentation extends InstrumentationBase {
     if (name) span.setAttribute('error.name', name);
     if (reason) span.setAttribute('error.reason', reason);
 
-    addBasicAttributes(span);
     span.end();
   }
   enable() {

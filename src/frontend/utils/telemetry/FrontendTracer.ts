@@ -12,8 +12,8 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { SessionIdProcessor } from './SessionIdProcessor';
 import { detectResourcesSync } from '@opentelemetry/resources/build/src/detect-resources';
 import { WebVitalsInstrumentation } from './WebVitalsInstrumentation';
-import { addBasicAttributes } from './basic-attributes';
 import { ErrorInstrumentation } from './Errors/ErrorInstrumentation';
+import { ContextProcessor } from './ContextProcessor';
 
 const { NEXT_PUBLIC_OTEL_SERVICE_NAME = '', NEXT_PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = '' } =
   typeof window !== 'undefined' ? window.ENV : {};
@@ -29,7 +29,8 @@ const FrontendTracer = async (collectorString: string, meta?: Record<string, str
   resource = resource.merge(detectedResources);
   const provider = new WebTracerProvider({ resource });
 
-  provider.addSpanProcessor(new SessionIdProcessor(meta));
+  provider.addSpanProcessor(new SessionIdProcessor());
+  provider.addSpanProcessor(new ContextProcessor(meta));
   provider.addSpanProcessor(
     new BatchSpanProcessor(
       new OTLPTraceExporter({
@@ -54,11 +55,7 @@ const FrontendTracer = async (collectorString: string, meta?: Record<string, str
       new WebVitalsInstrumentation(),
       getWebAutoInstrumentations({
         '@opentelemetry/instrumentation-document-load': {
-          applyCustomAttributesOnSpan: {
-            documentLoad: span => {
-              addBasicAttributes(span);
-            },
-          },
+          enabled: true,
         },
         '@opentelemetry/instrumentation-user-interaction': {
           enabled: true,
@@ -70,7 +67,6 @@ const FrontendTracer = async (collectorString: string, meta?: Record<string, str
           propagateTraceHeaderCorsUrls: /.*/,
           clearTimingResources: true,
           applyCustomAttributesOnSpan(span) {
-            addBasicAttributes(span);
             span.setAttribute('app.synthetic_request', 'false');
           },
         },
