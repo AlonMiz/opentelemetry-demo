@@ -23,7 +23,9 @@ declare global {
 
 if (typeof window !== 'undefined') {
   const collector = getCookie('otelCollectorUrl')?.toString() || '';
-  FrontendTracer(collector);
+  const userId = getCookie('userId')?.toString() || '';
+  const groupId = getCookie('groupId')?.toString() || '';
+  FrontendTracer(collector, { 'app.user.id': userId, 'app.group.id': groupId });
 }
 
 const queryClient = new QueryClient();

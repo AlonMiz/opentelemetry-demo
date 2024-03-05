@@ -18,7 +18,7 @@ import { ErrorInstrumentation } from './Errors/ErrorInstrumentation';
 const { NEXT_PUBLIC_OTEL_SERVICE_NAME = '', NEXT_PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = '' } =
   typeof window !== 'undefined' ? window.ENV : {};
 
-const FrontendTracer = async (collectorString: string) => {
+const FrontendTracer = async (collectorString: string, meta?: Record<string, string>) => {
   const { ZoneContextManager } = await import('@opentelemetry/context-zone');
 
   let resource = new Resource({
@@ -29,7 +29,7 @@ const FrontendTracer = async (collectorString: string) => {
   resource = resource.merge(detectedResources);
   const provider = new WebTracerProvider({ resource });
 
-  provider.addSpanProcessor(new SessionIdProcessor());
+  provider.addSpanProcessor(new SessionIdProcessor(meta));
   provider.addSpanProcessor(
     new BatchSpanProcessor(
       new OTLPTraceExporter({
