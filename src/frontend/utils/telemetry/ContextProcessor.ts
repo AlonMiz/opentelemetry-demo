@@ -27,8 +27,8 @@ const addBasicAttributes = (span: Span): void => {
 };
 
 export class ContextProcessor implements SpanProcessor {
-  meta: Record<string, string> = {};
-  constructor(meta?: Record<string, string>) {
+  meta: Record<string, string | undefined | null> = {};
+  constructor(meta?: Record<string, string | undefined | null>) {
     if (meta && typeof meta !== 'object') throw new Error('meta must be an object');
     this.meta = meta ?? {};
   }
